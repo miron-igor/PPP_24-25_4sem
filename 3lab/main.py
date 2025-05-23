@@ -1,8 +1,17 @@
+import websockets
+import asyncio
+import json
 
-def main():
-    # Ваш код здесь
-    pass
+async def listen():
+    async with websockets.connect("ws://localhost:8000/ws/11") as websocket:
+        print("Соединение установлено. Ожидание сообщений...")
+        try:
+            while True:
+                message = await websocket.recv()
+                data = json.loads(message)
+                print("\nПолучено сообщение:")
+                print(json.dumps(data, indent=2, ensure_ascii=False))
+        except websockets.exceptions.ConnectionClosed:
+            print("Соединение закрыто.")
 
-if __name__ == "__main__":
-    main()
-
+asyncio.run(listen())
